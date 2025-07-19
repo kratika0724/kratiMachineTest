@@ -6,23 +6,24 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  MyApp({super.key});
+  final HomeBloc _counterBloc = HomeBloc(0);
 
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider(create: (_) => HomeBloc()),
+        BlocProvider<HomeBloc>.value(value: _counterBloc),
         BlocProvider(create: (_) => GoToSecondScreenBloc()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         navigatorObservers: [routeObserver],
-        onGenerateRoute: AppRoute().onGenerateRoute,
+        onGenerateRoute: (settings) => AppRoute().onGenerateRoute(settings, _counterBloc),
       ),
     );
   }

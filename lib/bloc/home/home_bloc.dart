@@ -3,7 +3,7 @@ import 'package:bloc_demo/bloc/home/home_event.dart';
 import 'package:flutter/material.dart';
 
 class HomeBloc extends Bloc<HomeEvent, int> {
-  HomeBloc() : super(0) {
+  HomeBloc(super.initialState) {
     on<HomeEvent>(
       (handler, emit) async {
         debugPrint("Home Init Event called");
