@@ -1,10 +1,11 @@
-import 'package:bloc_demo/bloc/home/home_bloc.dart';
-import 'package:bloc_demo/bloc/home/second_screen_nav_bloc.dart';
-import 'package:bloc_demo/bloc/home/second_screen_nav_state.dart';
-import 'package:bloc_demo/ui/home/home.dart';
-import 'package:bloc_demo/ui/second_screen/second.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../bloc/home/home_bloc.dart';
+import '../bloc/home/second_screen_nav_bloc.dart';
+import '../ui/home/home.dart';
+import '../ui/second_screen/second.dart';
 
 class AppRoute {
   final GoToSecondScreenBloc _homeNavigateBloc = GoToSecondScreenBloc();
@@ -24,6 +25,7 @@ class AppRoute {
           value: _homeNavigateBloc,
           child: const Second(),
         );
+
       default:
         widget = const SizedBox.shrink();
     }

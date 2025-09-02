@@ -1,6 +1,8 @@
 import 'package:bloc/bloc.dart';
-import 'package:bloc_demo/bloc/home/home_event.dart';
+
 import 'package:flutter/material.dart';
+
+import 'home_event.dart';
 
 class HomeBloc extends Bloc<HomeEvent, int> {
   HomeBloc(super.initialState) {

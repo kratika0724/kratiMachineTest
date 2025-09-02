@@ -1,7 +1,7 @@
-import 'package:bloc_demo/bloc/home/home_bloc.dart';
-import 'package:bloc_demo/bloc/home/home_event.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../bloc/home/home_bloc.dart';
+import '../../bloc/home/home_event.dart';
 
 class Second extends StatefulWidget {
   const Second({super.key});
