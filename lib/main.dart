@@ -1,51 +1,90 @@
-// import 'package:bloc_demo/bloc/home/home_bloc.dart';
-// import 'package:bloc_demo/bloc/home/second_screen_nav_bloc.dart';
-// import 'package:bloc_demo/route/app_route.dart';
-// import 'package:bloc_demo/utils/constants.dart';
-// import 'package:flutter/material.dart';
-// import 'package:flutter_bloc/flutter_bloc.dart';
-//
-// void main() {
-//   runApp(MyApp());
-// }
-//
-// class MyApp extends StatelessWidget {
-//   MyApp({super.key});
-//   final HomeBloc _counterBloc = HomeBloc(0);
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return MultiBlocProvider(
-//       providers: [
-//         BlocProvider<HomeBloc>.value(value: _counterBloc),
-//         BlocProvider(create: (_) => GoToSecondScreenBloc()),
-//       ],
-//       child: MaterialApp(
-//         debugShowCheckedModeBanner: false,
-//         navigatorObservers: [routeObserver],
-//         onGenerateRoute: (settings) => AppRoute().onGenerateRoute(settings, _counterBloc),
-//       ),
-//     );
-//   }
-// }
-
-
-import 'package:bloc_demo/provider/Biometric_screen.dart';
-import 'package:bloc_demo/provider/Counter_provider.dart';
-import 'package:camera/camera.dart';
+import 'package:bloc_demo/providers/authprovider.dart';
+import 'package:bloc_demo/providers/userprovider.dart';
+import 'package:bloc_demo/providers/themeprovider.dart';
+import 'package:bloc_demo/screens/loginscreen.dart';
+import 'package:bloc_demo/screens/userDetailscreen.dart';
+import 'package:bloc_demo/screens/userlistscreen.dart';
+import 'package:bloc_demo/models/usermodel.dart'; // Import your User model
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-import 'Bloc_Code/ui/project_weight/document_scan.dart';
-import 'machine_test/firstscreen.dart';
-
-List<CameraDescription> cameras = [];
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  cameras = await availableCameras();
-  runApp(
-    const MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: SplashScreen(), // ✅ Call Task1 screen here
+  runApp(const MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => AuthProvider()),
+        ChangeNotifierProvider(create: (_) => UserProvider()),
+        ChangeNotifierProvider(create: (_) => ThemeProvider()),
+      ],
+      child: Consumer<ThemeProvider>(
+        builder: (context, themeProvider, child) {
+          return MaterialApp(
+            title: 'User List App',
+            debugShowCheckedModeBanner: false,
+            theme: themeProvider.isDarkMode
+                ? ThemeData.dark()
+                : ThemeData.light(),
+            home: Consumer<AuthProvider>(
+              builder: (context, authProvider, child) {
+                return authProvider.isAuthenticated
+                    ? const UserListScreen()
+                    : const LoginScreen();
+              },
+            ),
+            routes: {
+              '/login': (context) => const LoginScreen(),
+              '/users': (context) => const UserListScreen(),
+            },
+            // Use onGenerateRoute for complex navigation with arguments
+            onGenerateRoute: (RouteSettings settings) {
+              switch (settings.name) {
+                case '/user-detail':
+                  final user = settings.arguments as User;
+                  return MaterialPageRoute(
+                    builder: (context) => UserDetailScreen(user: user),
+                  );
+                default:
+                  return null;
+              }
+            },
+          );
+        },
+      ),
+    );
+  }
+}
+
+// USAGE EXAMPLES:
+
+// Option 1: Navigate with User object from UserListScreen
+/*
+// In your UserListScreen or any other screen:
+onTap: () {
+  Navigator.pushNamed(
+    context,
+    '/user-detail',
+    arguments: user, // Pass the entire User object
+  );
+}
+*/
+
+// Option 2: Alternative - Direct navigation without named routes
+/*
+// In your UserListScreen:
+onTap: () {
+  Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (context) => UserDetailScreen(user: user),
     ),
   );
 }
+*/
